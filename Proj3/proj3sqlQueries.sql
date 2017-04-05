@@ -92,7 +92,8 @@ FROM
 
                 ) AS Mentors 
                 ON S.MentorID = InstructorID
-WHERE Classification = 'Senior';
+WHERE Classification = 'Senior'
+ORDER BY GPA desc;
 
 /* Part A Query*/
 SELECT 
@@ -101,6 +102,17 @@ FROM
 	Student s 
 INNER JOIN Enrollment e ON s.StudentID = e.StudentID 
 ORDER BY s.StudentID;
+
+/*Top Seniors Java Friendly*/
+SELECT Name, MentorName, GPA, Classification
+FROM Student S INNER JOIN Person pp ON pp.ID = S.StudentID
+INNER JOIN (SELECT P.Name AS MentorName, I.InstructorID FROM
+Person P INNER JOIN Instructor I ON P.ID = I.InstructorID
+WHERE I.InstructorID IN (SELECT MentorID FROM Student
+WHERE classification = 'Senior')) AS Mentors 
+ON S.MentorID = InstructorID
+WHERE Classification = 'Senior'
+ORDER BY GPA desc;
 
 
 
