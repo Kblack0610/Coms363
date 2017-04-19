@@ -1,36 +1,15 @@
-MATCH (facultyPerson)<-[:F2P]-(:Faculty)-[:Mentors]->(:Student)-[:S2P]->(studentPerson) 
-RETURN facultyPerson.Name as Faculty, studentPerson.Name as student;
+MATCH (facultyPerson)<-[:F2P]-(:Faculty)-[:Mentors]->(:Student)-[:S2P]->(studentPerson) RETURN facultyPerson.Name as Faculty, studentPerson.Name as student;
 
-MATCH (s:Student)
-WHERE s.Classification = "Sophomore"
-RETURN s.Classification as Classification, AVG(s.GPA) as AverageGPA;
+MATCH (s:Student) WHERE s.Classification = "Sophomore" RETURN s.Classification as Classification, AVG(s.GPA) as AverageGPA;
 
-MATCH (facultyPerson)<-[:F2P]-(:Faculty)-[:Mentors]->(s:Student)-[:S2P]->(studentPerson),
-(ss:Student)-[:Taking]->(:Offering)
-WHERE s.ID IN ss.ID
-RETURN DISTINCT facultyPerson.Name as faculty, studentPerson.Name as student;
+MATCH (facultyPerson)<-[:F2P]-(:Faculty)-[:Mentors]->(s:Student)-[:S2P]->(studentPerson), (ss:Student)-[:Taking]->(:Offering) WHERE s.ID IN ss.ID RETURN DISTINCT facultyPerson.Name as faculty, studentPerson.Name as student;
 
-MATCH (student)<-[:S2P]-(s:Student)-[t:Taking]->(:Offering)
-WHERE t.Grade = A
-RETURN DISTINCT student.Name;
+MATCH (student)<-[:S2P]-(s:Student)-[t:Taking]->(:Offering) WHERE t.Grade = "A" RETURN DISTINCT student.Name;
 
-MATCH (c:Course)-[PreReq]->(cc:Course)
-WHERE c.CourseCode = "CS311"
-RETURN cc.CourseCode;
+MATCH (c:Course)-[PreReq]->(cc:Course) WHERE c.CourseCode = "CS311" RETURN cc.CourseCode;
 
-MATCH (f:Faculty)-[:F2P]->(p:Person)
-WHERE f.Salary >= 100000
-RETURN p.Name as Name, f.Rank as Rank;
+MATCH (f:Faculty)-[:F2P]->(facultyPerson:Person) WHERE f.Salary >= 100000 RETURN facultyPerson.Name as Name, f.Rank as Rank;
 
-MATCH (facultyPerson)<-[:F2P]-(:Faculty)-[:Mentors]->(s:Student)
-RETURN facultyPerson.Name as Faculty, s.Classification as StudentClassification, s.GPA as StudentGPA;
+MATCH (facultyPerson)<-[:F2P]-(:Faculty)-[:Mentors]->(s:Student) RETURN facultyPerson.Name as Faculty, s.Classification as StudentClassification, s.GPA as StudentGPA;
 
-MATCH (p:Person)<-[:F2P]-(f:Faculty)-[:Offers]->(o:Offering),
-(s:Student)-[t:Taking]->(oo:Offering)-[:Covers]->(c:Course)
-WHERE o.ID in oo.ID
-RETURN c.CourseName as CourseName, oo.Section as Section, p.Name as InstructorName, t.EnrollmentID;
-
-
-
-
-
+MATCH (facultyPerson:Person)<-[:F2P]-(f:Faculty)-[:Offers]->(o:Offering), (s:Student)-[t:Taking]->(oo:Offering)-[:Covers]->(c:Course) WHERE o.ID in oo.ID RETURN c.CourseName as CourseName, oo.Section as Section, facultyPerson.Name as InstructorName, t.EnrollmentID;
